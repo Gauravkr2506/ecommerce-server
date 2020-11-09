@@ -9,11 +9,31 @@ const {
   read,
   remove,
   update,
+  list,
+  listRelated,
+  listCategories,
 } = require("../controllers/product.js");
-router.get("/:productId", read);
-router.post("/create/:userId", requireSignin, isAuth, isAdmin, create);
-router.delete("/:productId/:userId", requireSignin, isAuth, isAdmin, remove);
-router.put("/:productId/:userId", requireSignin, isAuth, isAdmin, update);
+
+router.get("/product/:productId", read);
+router.post("/product/create/:userId", requireSignin, isAuth, isAdmin, create);
+router.delete(
+  "/product/:productId/:userId",
+  requireSignin,
+  isAuth,
+  isAdmin,
+  remove
+);
+router.put(
+  "/product/:productId/:userId",
+  requireSignin,
+  isAuth,
+  isAdmin,
+  update
+);
+router.get("/products/", list);
+router.get("/products/related/:productId", listRelated);
+router.get("/products/categories", listCategories);
+router.post("/products/by/search", listBySearch);
 
 router.param("userId", userById);
 router.param("productId", productById);

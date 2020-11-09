@@ -30,7 +30,7 @@ mongoose.connection.on("error", (err) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api", categoryRoutes);
-app.use("/api/product", productRoutes);
+app.use("/api", productRoutes);
 
 const port = process.env.port || 8001;
 
