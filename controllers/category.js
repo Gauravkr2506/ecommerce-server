@@ -2,6 +2,7 @@ const Category = require("../model/category");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 exports.create = (req, res) => {
   const category = new Category(req.body);
+  console.log("gaurara");
   category.save((err, data) => {
     if (err) {
       res.status(400).json({
@@ -14,10 +15,10 @@ exports.create = (req, res) => {
 };
 
 exports.categoryById = (req, res, next, id) => {
-  Category.findById(id).exec((err, category) => {
-    if (err || !category) {
+  Category.findById(id).exec((error, category) => {
+    if (error || !category) {
       return res.status(400).json({
-        err: "Category does not exist",
+        error: "Category does not exist",
       });
     }
 
@@ -61,7 +62,7 @@ exports.list = (req, res) => {
   Category.find().exec((err, data) => {
     if (err) {
       res.status(400).json({
-        error: errorHandler(err),
+        error: err,
       });
     }
 

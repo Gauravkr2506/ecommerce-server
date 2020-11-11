@@ -187,6 +187,13 @@ exports.listCategories = (req, res) => {
   });
 };
 
+/**
+ * list products by search
+ * we will implement product search in react frontend
+ * we will show categories in checkbox and price range in radio buttons
+ * as the user clicks on those checkbox and radio buttons
+ * we will make api request and show the products to users based on what he wants
+ */
 exports.listBySearch = (req, res) => {
   let order = req.body.order ? req.body.order : "desc";
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
@@ -229,4 +236,12 @@ exports.listBySearch = (req, res) => {
         data,
       });
     });
+};
+
+exports.photo = (req, res, next) => {
+  if (req.product.photo.data) {
+    res.set("Content-Type", req.product.photo.contentType);
+    return res.send(req.product.photo.data);
+  }
+  next();
 };
