@@ -12,6 +12,8 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
+const brainTreeRoutes = require("./routes/braintree");
+const orderRoutes = require("./routes/order");
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true })
@@ -33,6 +35,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
+app.use("/api", brainTreeRoutes);
+app.use("/api", orderRoutes);
 
 const port = process.env.port || 8001;
 

@@ -5,16 +5,18 @@ const Product = require("../model/product");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 
 exports.productById = (req, res, next, id) => {
-  Product.findById(id).exec((err, product) => {
-    if (err || !product) {
-      return res.status(400).json({
-        error: "Product not found",
-      });
-    }
+  Product.findById(id)
+    .populate("category")
+    .exec((err, product) => {
+      if (err || !product) {
+        return res.status(400).json({
+          error: "Product not found",
+        });
+      }
 
-    req.product = product;
-    next();
-  });
+      req.product = product;
+      next();
+    });
 };
 
 exports.create = (req, res) => {
@@ -244,4 +246,48 @@ exports.photo = (req, res, next) => {
     return res.send(req.product.photo.data);
   }
   next();
+};
+
+exports.listSearch = (req, res) => {
+  const query = {};
+  if (req.query.search) {
+    query.name = { $regex: req.query.search, $options: "i" };
+
+    if (req.query.category && req.query.category !== "All") {
+      query.category = req.query.category;
+    }
+
+    Product.find(query, (err, products) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      console.log("gaurav");
+      console.log(query);
+
+      res.json(products);
+    }).select("-photo");
+  }
+};
+
+exports.decreaseQuantity = (req, res, next) => {
+  let bulkOps = req.body.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  Product.bulkWrite(bulkOps, {}, (error, products) => {
+    if (error) {
+      return res.status(400).json({
+        error: "Could not update product",
+      });
+    }
+
+    next();
+  });
 };
